@@ -38,6 +38,8 @@ public class Plugin : BaseUnityPlugin
         _harmony.PatchAll(typeof(DefaultPoolPatch));
         _harmony.PatchAll(typeof(PrefabRefPatch));
         _harmony.PatchAll(typeof(SplashScreenPatch));
+        _harmony.PatchAll(typeof(MetaManagerPatch));
+        _harmony.PatchAll(typeof(PlayerCosmeticsPatch));
 
         ConfigManager.Initialize(Config);
 
