@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using HarmonyLib;
 using REPOLib.Modules;
@@ -15,15 +16,47 @@ internal static class MetaManagerPatch
     private static List<List<string>> missingCosmeticPresets = [];
 
     [HarmonyPatch(nameof(MetaManager.Awake))]
+    [HarmonyPrefix]
+    private static void AwakePrefix(MetaManager __instance)
+    {
+        __instance.presetCacheFolder += "Modded";
+    }
+
+    [HarmonyPatch(nameof(MetaManager.Awake))]
     [HarmonyPostfix]
     private static void AwakePatch(MetaManager __instance)
     {
         if(__instance != MetaManager.instance) return;
+
         if(BundleLoader.AllBundlesLoaded){
             Cosmetics.RegisterCosmetics();
         }else{
             BundleLoader.OnAllBundlesLoaded += Cosmetics.RegisterCosmetics;
         }
+
+        #region Clear icon cache for modded cosmetics
+        string _cosmeticIconsPath = Path.Combine(Application.persistentDataPath, "Cache", "Icons", "Cosmetics");
+        if(Directory.Exists(_cosmeticIconsPath)){
+            int deletedCount = 0;
+            int totalCount = 0;
+            List<string> _cosmeticNames = new List<string>(__instance.cosmeticAssets.Where(x => x != null && !Cosmetics.RegisteredCosmetics.Contains(x)).Select(x => x.name.ToLowerInvariant()));
+            Directory.GetFiles(_cosmeticIconsPath).ToList().ForEach(f => {
+                if(!_cosmeticNames.Contains(Path.GetFileNameWithoutExtension(f).ToLowerInvariant())){
+                    totalCount++;
+
+                    try{
+                        File.Delete(f);
+                        deletedCount++;
+                    }catch(System.Exception e){
+                        Logger.LogWarning($"Could not delete file {f}: {e.Message}");
+                    }
+                }
+            });
+            if(totalCount > 0){
+                Logger.LogInfo($"Deleted {deletedCount}/{totalCount} files for cosmetics icon cache");
+            }
+        }
+        #endregion
     }
 
     [HarmonyPatch(nameof(MetaManager.PresetsInitialize))]
@@ -65,7 +98,7 @@ internal static class MetaManagerPatch
         var _saveSettings = new ES3Settings(ES3.Location.File);
         _saveSettings.encryptionType = ES3.EncryptionType.AES;
         _saveSettings.encryptionPassword = StatsManager.instance.totallyNormalString;
-        _saveSettings.path = Application.isEditor ? __instance.savePathEditor : __instance.savePath;
+        _saveSettings.path = $"{__instance.savePath}.es3";
 
         // Values that are in-sync with vanilla save file
         ES3.Save("cosmeticTokens", __instance.cosmeticTokens, _saveSettings);
@@ -77,7 +110,7 @@ internal static class MetaManagerPatch
         var _saveSettingsModded = new ES3Settings(ES3.Location.Cache);
         _saveSettingsModded.encryptionType = _saveSettings.encryptionType;
         _saveSettingsModded.encryptionPassword = _saveSettings.encryptionPassword;
-        _saveSettingsModded.path = "Modded" + _saveSettings.path;
+        _saveSettingsModded.path = $"{__instance.savePath}Modded.es3";
 
         ES3.Save("cosmeticUnlocks", __instance.cosmeticUnlocks.Where(IsValidModdedCosmetic).Select(x => __instance.cosmeticAssets[x].assetId)
             .Concat(missingCosmeticUnlocks).ToList(), _saveSettingsModded);
@@ -115,7 +148,7 @@ internal static class MetaManagerPatch
 
         bool IsValidCosmetic(string x) => MetaManager.instance.cosmeticAssets.FirstOrDefault(a => a.assetId == x);
 
-        var _savePathModded = "Modded" + (Application.isEditor ? MetaManager.instance.savePathEditor : MetaManager.instance.savePath);
+        var _savePathModded = $"{MetaManager.instance.savePath}Modded.es3";
         try{
             ES3Settings _saveFileModded = new ES3Settings(_savePathModded, ES3.EncryptionType.AES, StatsManager.instance.totallyNormalString);
             if(ES3.FileExists(_saveFileModded)){
