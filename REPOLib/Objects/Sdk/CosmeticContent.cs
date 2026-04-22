@@ -45,6 +45,9 @@ public class CosmeticContent : Content
     public override string Name => Prefab?.name ?? string.Empty;
 
     /// <inheritdoc/>
+    public override AssetBundle? Bundle { get; internal set; }
+
+    /// <inheritdoc/>
     public override void Initialize(Mod mod)
     {
         Cosmetics.RegisterCosmetic(this);

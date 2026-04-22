@@ -83,6 +83,37 @@ public static class Cosmetics
     /// <summary>
     /// Registers an <see cref="CosmeticAsset"/>.
     /// </summary>
+    /// <param name="cosmeticAsset">The cosmetic to register.</param>
+    /// <returns>The registered cosmetic <see cref="PrefabRef"/> or null.</returns>
+    public static PrefabRef? RegisterCosmetic(CosmeticAsset? cosmeticAsset)
+    {
+        if (cosmeticAsset == null)
+        {
+            Logger.LogError($"Failed to register cosmetic. CosmeticAsset is null.");
+            return null;
+        }
+
+        if (cosmeticAsset.prefab == null)
+        {
+            Logger.LogError($"Failed to register cosmetic \"{cosmeticAsset.name}\". PrefabRef is null.");
+            return null;
+        }
+
+        _cosmeticsToRegister.Add(cosmeticAsset);
+
+        if (_initialCosmeticsRegistered)
+        {
+            RegisterCosmeticWithGame(cosmeticAsset);
+
+            MetaManagerPatch.LoadModded();
+        }
+
+        return cosmeticAsset.prefab;
+    }
+
+    /// <summary>
+    /// Registers an <see cref="CosmeticAsset"/>.
+    /// </summary>
     /// <param name="cosmeticContent">The cosmetic to register.</param>
     /// <returns>The registered cosmetic <see cref="PrefabRef"/> or null.</returns>
     public static PrefabRef? RegisterCosmetic(CosmeticContent? cosmeticContent)
@@ -105,51 +136,44 @@ public static class Cosmetics
             return null;
         }
 
-        GameObject prefab = cosmeticContent.Prefab;
+        GameObject prefab = cosmeticContent.Prefab ?? cosmeticContent.Asset.prefab.Prefab;
         string prefabId = $"Cosmetics/{prefab.name}";
-
+        
         PrefabRefResponse prefabRefResponse = NetworkPrefabs.RegisterNetworkPrefabInternal(prefabId, prefab);
         PrefabRef? prefabRef = prefabRefResponse.PrefabRef;
-
+        
         if (prefabRefResponse.Result == PrefabRefResult.PrefabAlreadyRegistered)
         {
             Logger.LogWarning($"Failed to register cosmetic \"{cosmeticContent.name}\". Cosmetic is already registered!");
             return null;
         }
-
+        
         if (prefabRefResponse.Result == PrefabRefResult.DifferentPrefabAlreadyRegistered)
         {
             Logger.LogError($"Failed to register cosmetic \"{cosmeticContent.name}\". A cosmetic prefab is already registered with the same name.");
             return null;
         }
-
+        
         if (prefabRefResponse.Result != PrefabRefResult.Success)
         {
-            Logger.LogError($"Failed to register cosmetic \"{prefab.name}\". (Reason: {prefabRefResponse.Result})");
+            Logger.LogError($"Failed to register cosmetic \"{cosmeticContent.name}\". (Reason: {prefabRefResponse.Result})");
             return null;
         }
 
         if (prefabRef == null)
         {
-            Logger.LogError($"Failed to register cosmetic \"{prefab.name}\". PrefabRef is null.");
+            Logger.LogError($"Failed to register cosmetic \"{cosmeticContent.name}\". PrefabRef is null.");
             return null;
         }
 
+        // prefabRef.bundle = cosmeticContent.Bundle;
         cosmeticContent.Asset.prefab = prefabRef;
 
-        if(!string.IsNullOrWhiteSpace(cosmeticContent.AssetId)){
+        if (!string.IsNullOrWhiteSpace(cosmeticContent.AssetId))
+        {
             cosmeticContent.Asset.assetId = cosmeticContent.AssetId;
         }
 
-        _cosmeticsToRegister.Add(cosmeticContent.Asset);
-
-        if (_initialCosmeticsRegistered)
-        {
-            RegisterCosmeticWithGame(cosmeticContent.Asset);
-
-            MetaManagerPatch.LoadModded();
-        }
-
-        return prefabRef;
+        return RegisterCosmetic(cosmeticContent.Asset);
     }
 }

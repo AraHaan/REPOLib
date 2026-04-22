@@ -203,6 +203,7 @@ public static class BundleLoader
         {
             try
             {
+                content.Bundle = bundle;
                 content.Initialize(mod);
             }
             catch (Exception ex)
