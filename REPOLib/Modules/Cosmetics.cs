@@ -146,6 +146,7 @@ public static class Cosmetics
             string prefabId = $"Cosmetics/{prefab.name}";
         
             PrefabRefResponse prefabRefResponse = NetworkPrefabs.RegisterNetworkPrefabInternal(prefabId, prefab);
+            prefabRef = prefabRefResponse.PrefabRef;
         
             if (prefabRefResponse.Result == PrefabRefResult.PrefabAlreadyRegistered)
             {
