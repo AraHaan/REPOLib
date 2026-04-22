@@ -12,16 +12,15 @@ public class CosmeticContent : Content
     #pragma warning disable CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
     [SerializeField]
     private string? _assetId;
-    #pragma warning restore CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
 
-    #pragma warning disable CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
     [SerializeField]
     private CosmeticAsset? _asset;
-    #pragma warning restore CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
 
-    #pragma warning disable CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
     [SerializeField]
     private GameObject? _prefab;
+
+    [SerializeField]
+    private PrefabRef? _prefabRef;
     #pragma warning restore CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
 
     /// <summary>
@@ -40,9 +39,14 @@ public class CosmeticContent : Content
     public GameObject? Prefab => _prefab;
 
     /// <summary>
+    /// The <see cref="PrefabRef"/> of this content.
+    /// </summary>
+    public PrefabRef? PrefabRef => _prefabRef;
+
+    /// <summary>
     /// The name of the <see cref="Prefab"/>.
     /// </summary>
-    public override string Name => Prefab?.name ?? string.Empty;
+    public override string Name => PrefabRef?.PrefabName ?? Prefab?.name ?? string.Empty;
 
     /// <inheritdoc/>
     public override AssetBundle? Bundle { get; internal set; }
