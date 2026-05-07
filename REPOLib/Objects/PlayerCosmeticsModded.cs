@@ -4,9 +4,8 @@ using Photon.Pun;
 
 namespace REPOLib.Objects;
 
-public class PlayerCosmeticsModded : MonoBehaviourPun
+internal class PlayerCosmeticsModded : MonoBehaviourPun
 {
-
 	public List<string> cosmeticEquipped = new();
 
 	[PunRPC]
