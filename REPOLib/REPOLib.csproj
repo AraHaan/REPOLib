@@ -64,6 +64,8 @@
   <ItemGroup>
     <None Include="$(ProjectDir)../README.md" Pack="true" PackagePath="/" CopyToPluginOutputDirectory="true" />
     <None Include="$(ProjectDir)../icon.png" Pack="true" PackagePath="/" CopyToPluginOutputDirectory="true" />
+    
+    <None Include="../CHANGELOG.md" Link="CHANGELOG.md" />
   </ItemGroup>
   
   <ItemGroup>

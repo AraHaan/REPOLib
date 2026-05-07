@@ -1,14 +1,13 @@
 ﻿using HarmonyLib;
-using Photon.Pun;
 using REPOLib.Modules;
 using UnityEngine;
 
 namespace REPOLib.Patches;
 
-[HarmonyPatch(typeof(DefaultPool))]
-internal static class DefaultPoolPatch
+[HarmonyPatch(typeof(MultiplayerPool))]
+internal static class MultiplayerPoolPatch
 {
-    [HarmonyPatch(nameof(DefaultPool.Instantiate))]
+    [HarmonyPatch(nameof(MultiplayerPool.Instantiate))]
     [HarmonyPrefix]
     private static bool InstantiatePatch(string prefabId, Vector3 position, Quaternion rotation, ref GameObject __result)
     {
