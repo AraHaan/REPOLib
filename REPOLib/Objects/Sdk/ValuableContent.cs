@@ -34,6 +34,9 @@ public class ValuableContent : Content
     public override string Name => Prefab?.name ?? string.Empty;
 
     /// <inheritdoc/>
+    public override AssetBundle? Bundle { get; internal set; }
+
+    /// <inheritdoc/>
     public override void Initialize(Mod mod)
     {
         Valuables.RegisterValuable(this);

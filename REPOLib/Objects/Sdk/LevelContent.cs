@@ -101,6 +101,9 @@ public class LevelContent : Content
     #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
     /// <inheritdoc/>
+    public override AssetBundle? Bundle { get; internal set; }
+
+    /// <inheritdoc/>
     public override void Initialize(Mod mod)
     {
         Levels.RegisterLevel(this);

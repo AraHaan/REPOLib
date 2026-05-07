@@ -137,19 +137,19 @@ public static class Levels
         }
 
         GameObject? connectObjectPrefab = levelContent.ConnectObject;
-
+        
         if (connectObjectPrefab != null)
         {
-            RegisterLevelPrefab($"Level/{level.ResourcePath}/Other/{connectObjectPrefab.name}", connectObjectPrefab);
-            level.ConnectObject = connectObjectPrefab;
+            PrefabRef? connectObjectPrefabRef = RegisterLevelPrefab($"Level/{level.name}/Other/{connectObjectPrefab.name}", connectObjectPrefab);
+            level.ConnectObject = connectObjectPrefabRef;
         }
-
+        
         GameObject? blockObjectPrefab = levelContent.BlockObject;
-
+        
         if (blockObjectPrefab != null)
         {
-            RegisterLevelPrefab($"Level/{level.ResourcePath}/Other/{blockObjectPrefab.name}", blockObjectPrefab);
-            level.BlockObject = blockObjectPrefab;
+            PrefabRef? blockObjectPrefabRef = RegisterLevelPrefab($"Level/{level.name}/Other/{blockObjectPrefab.name}", blockObjectPrefab);
+            level.BlockObject = blockObjectPrefabRef;
         }
 
         level.StartRooms = RegisterLevelModules(level, ModuleType.StartRoom, levelContent.StartRooms);

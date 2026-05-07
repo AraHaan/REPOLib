@@ -34,7 +34,10 @@ public static class ValuablePresets
             return;
         }
 
-        AddValuablePresets(RunManager.instance.levelArena.ValuablePresets);
+        foreach (var level in RunManager.instance.levelArena)
+        {
+            AddValuablePresets(level.ValuablePresets);
+        }
 
         foreach (var level in RunManager.instance.levels)
         {

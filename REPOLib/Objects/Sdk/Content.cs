@@ -13,6 +13,11 @@ public abstract class Content : ScriptableObject
     public abstract string Name { get; }
 
     /// <summary>
+    /// The asset bundle of this content.
+    /// </summary>
+    public abstract AssetBundle? Bundle { get; internal set; }
+
+    /// <summary>
     /// Initializes this content.
     /// </summary>
     /// <param name="mod">The <see cref="Mod"/> this content belongs to.</param>
