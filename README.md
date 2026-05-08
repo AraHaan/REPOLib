@@ -16,10 +16,11 @@
 - **Registering upgrades.**
 - **Registering enemies.**
 - **Registering levels.**
+- **Registering cosmetics.**
 - Method to spawn network prefabs. (Which works in both multiplayer and singleplayer)
-- Methods to get valuables and spawn valuables.
-- Methods to get items and spawn items.
-- Methods to get enemies and spawn enemies.
+- Methods to get and spawn valuables.
+- Methods to get and spawn items.
+- Methods to get and spawn enemies.
 - Registering debug chat commands.
 - **Fixing audio mixer groups.**
 - Making networked events.

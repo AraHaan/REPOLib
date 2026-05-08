@@ -1,4 +1,12 @@
-# v3.0.4
+# v4.0.0
+
+- Updated for R.E.P.O. v0.4.0 (#72)
+- Added support for registering cosmetics. (#72)
+  - Added Cosmetics module.
+  - Added CosmeticContent to SDK.
+- Fixed vanilla developer mode being disabled when enabled by vanilla or other mods. (#70)
+
+## v3.0.4
 
 - Updated the documentation URL in the README.
 - Updated the BepInExPack dependency target version in the manifest.
