@@ -1,4 +1,8 @@
-# v4.0.0
+# v4.0.1
+
+- Fixed enemies spawned with REPOLib not being able to see players.
+
+## v4.0.0
 
 - Updated for R.E.P.O. v0.4.0 (#72)
 - Added support for registering cosmetics. (#72)
@@ -51,7 +55,7 @@
 ## v2.0.1
 
 - Fixed BundleLoader causing an infinite loading screen when loading invalid content.
-- Moved documentation to the [R.E.P.O. Modding Wiki](https://repomods.com/repolib/overview.html).
+- Moved documentation to the [R.E.P.O. Modding Wiki](https://repomods.com/apis/repolib/overview.html).
 - Added XML documentation for most public API classes, methods, and properties. (#40)
 
 ## v2.0.0
@@ -108,16 +112,16 @@
 
 ## v1.4.1
 
-- Added [`RaiseMasterClient`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkedEvent.cs#L32) to [`REPOLib.Modules.NetworkingEvents`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkedEvent.cs) class.
-- Added [`RaiseEvent`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkedEvent.cs#L128) method to [`REPOLib.Modules.NetworkedEvent`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkedEvent.cs#L101) class.
+- Added `RaiseMasterClient` to [`REPOLib.Modules.NetworkingEvents` class.
+- Added `RaiseEvent` method to [`REPOLib.Modules.NetworkedEvent` class.
   - This method works to call in singleplayer.
 
 ## v1.4.0
 
 - Added REPOLib as default dependency to the `Mod` asset. (#11)
-- Added [`REPOLib.Modules.Utilities`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/Utilities.cs) class that contains a function [`public static void FixAudioMixerGroups(GameObject prefab);`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/Utilities.cs#L28) to fix the audio mixer groups on a prefab and their children. (#10)
+- Added `REPOLib.Modules.Utilities` class that contains a function `public static void FixAudioMixerGroups(GameObject prefab);` to fix the audio mixer groups on a prefab and their children. (#10)
 - Registering features (Valuables, Items, Enemies, etc...) will now automatically fix their prefabs audio mixer groups.
-- Added [`REPOLib.Modules.NetworkedEvent`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkedEvent.cs#L96) class to easily manage your event codes when using [`PhotonNetwork.RaiseEvent();`](https://doc.photonengine.com/pun/current/gameplay/rpcsandraiseevent) (#12)
+- Added `REPOLib.Modules.NetworkedEvent` class to easily manage your event codes when using `PhotonNetwork.RaiseEvent();` (#12)
 
 ## v1.3.1
 
@@ -146,8 +150,8 @@
 
 ## v1.0.2
 
-- Small improvement to [`NetworkPrefabs.cs`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/NetworkPrefabs.cs), [`Valuables.cs`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/Valuables.cs), [`CustomPrefabPool.cs`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Objects/CustomPrefabPool.cs), [`LevelValuablesExtension.cs`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Extensions/LevelValuablesExtension.cs), and other.
-- Added `public static IReadOnlyList<GameObject> RegisteredValuables { get; }` to [`Valuables.cs`](https://github.com/ZehsTeam/REPOLib/blob/main/REPOLib/Modules/Valuables.cs#L11)
+- Small improvement to `NetworkPrefabs.cs`, `Valuables.cs`, `CustomPrefabPool.cs`, `LevelValuablesExtension.cs`, and other.
+- Added `public static IReadOnlyList<GameObject> RegisteredValuables { get; }` to `Valuables.cs`
 
 ## v1.0.1
 

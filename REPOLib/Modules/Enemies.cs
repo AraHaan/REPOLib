@@ -236,7 +236,7 @@ public static class Enemies
 
             enemyParent.firstSpawnPointUsed = true;
 
-            LevelGenerator.Instance.EnemiesSpawnTarget++;
+            //LevelGenerator.Instance.EnemiesSpawnTarget++;  // This causes enemies to not detect players anymore.
             EnemyDirector.instance.FirstSpawnPointAdd(enemyParent);
         }
 
