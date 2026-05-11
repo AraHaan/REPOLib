@@ -17,11 +17,12 @@ internal static class MetaManagerExtensions
 
     internal static bool AddCosmetic(this MetaManager metaManager, CosmeticAsset item)
     {
-        if (!metaManager.cosmeticAssets.Contains(item))
+        if (metaManager.cosmeticAssets.Contains(item))
         {
-            metaManager.cosmeticAssets.Add(item);
+            return false;
         }
 
+        metaManager.cosmeticAssets.Add(item);
         return true;
     }
 
