@@ -1,4 +1,10 @@
-# v4.0.1
+# v4.0.2
+
+- Fixed customize menu not working. (#76)
+- Implemented the meta save file backup logic from v0.4.2 (#76)
+- Improved the duplicate check for cosmetics (#76)
+
+## v4.0.1
 
 - Fixed enemies spawned with REPOLib not being able to see players.
 
@@ -43,6 +49,7 @@
 - Registering enemies requires you to put your spawn objects in the `EnemyContent` ScriptableObject.
 - Registering levels requires you to put your modules in the `LevelContent` ScriptableObject.
 
+<br><br>
 <details><summary>Older Versions</summary>
 
 # v2.1.0
