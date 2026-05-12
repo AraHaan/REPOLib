@@ -58,9 +58,9 @@ public static class Cosmetics
             item.assetId = $"modded:{item.name}";
         }
 
-        var duplicateAsset = AllCosmetics.FirstOrDefault(x => x.assetId == item.assetId);
+        var duplicateAsset = AllCosmetics.FirstOrDefault(x => x != item && x.assetId == item.assetId);
         if(duplicateAsset != null){
-            Logger.LogWarning($"Failed to add cosmetic \"{item.name}\" to MetaManager. Same assetId as \"{duplicateAsset.name}\".", extended: true);
+            Logger.LogWarning($"Failed to add cosmetic \"{item.name}\" to MetaManager. Same assetId as \"{duplicateAsset.name}\". Asset ID: {item.assetId}", extended: true);
             return;
         }
         #endregion
@@ -73,10 +73,6 @@ public static class Cosmetics
             }
 
             Logger.LogInfo($"Added cosmetic \"{item.name}\" to MetaManager.", extended: true);
-        }
-        else
-        {
-            Logger.LogWarning($"Failed to add cosmetic \"{item.name}\" to MetaManager.", extended: true);
         }
     }
 
