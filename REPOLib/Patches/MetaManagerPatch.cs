@@ -86,28 +86,30 @@ internal static class MetaManagerPatch
         missingCosmeticPresets[_index].Clear();
     }
 
+    private static void CreateSaveBackup(string _savePath){
+        try{
+            string _savePathOriginal = $"{Application.persistentDataPath}/{_savePath}.es3";
+            string _savePathBackup = $"{Application.persistentDataPath}/{_savePath}_BACKUP.es3";
+            if(File.Exists(_savePathOriginal)){
+                File.Copy(_savePathOriginal, _savePathBackup, true);
+            }
+        }catch(System.Exception e){
+            Debug.LogException(e);
+        }
+    }
+
     [HarmonyPatch(nameof(MetaManager.Save))]
     [HarmonyPrefix]
     private static bool SavePatch(MetaManager __instance, bool createBackup)
     {
-        return SaveModded();
+        if(createBackup) CreateSaveBackup(__instance.savePath);
+        SaveModded();
+        return false;
     }
 
-    public static bool SaveModded(bool createBackup = true)
+    public static void SaveModded(bool createBackup = true)
     {
-        if(!MetaManager.instance) return false;
-
-        if(createBackup){
-            try{
-                string _savePathOriginal = $"{Application.persistentDataPath}/{MetaManager.instance.savePath}Modded.es3";
-                string _savePathBackup = $"{Application.persistentDataPath}/{MetaManager.instance.savePath}Modded_BACKUP.es3";
-                if(File.Exists(_savePathOriginal)){
-                    File.Copy(_savePathOriginal, _savePathBackup, true);
-                }
-            }catch(System.Exception e){
-                Debug.LogException(e);
-            }
-        }
+        if(!MetaManager.instance) return;
 
         bool IsValidCosmetic(int x) => x >= 0 && x < MetaManager.instance.cosmeticAssets.Count && MetaManager.instance.cosmeticAssets[x] != null;
         bool IsValidVanillaCosmetic(int x) => IsValidCosmetic(x) && !Cosmetics.RegisteredCosmetics.Contains(MetaManager.instance.cosmeticAssets[x]);
@@ -126,6 +128,8 @@ internal static class MetaManagerPatch
         #endregion
 
         #region Modded
+        if(createBackup) CreateSaveBackup($"{MetaManager.instance.savePath}Modded");
+
         var _saveSettingsModded = new ES3Settings(ES3.Location.Cache);
         _saveSettingsModded.encryptionType = _saveSettings.encryptionType;
         _saveSettingsModded.encryptionPassword = _saveSettings.encryptionPassword;
@@ -148,8 +152,6 @@ internal static class MetaManagerPatch
 
         ES3.StoreCachedFile(_saveSettingsModded);
         #endregion
-
-        return false;
     }
 
     [HarmonyPatch(nameof(MetaManager.Load))]
@@ -169,11 +171,13 @@ internal static class MetaManagerPatch
 
         bool IsValidCosmetic(string x) => MetaManager.instance.cosmeticAssets.FirstOrDefault(a => a.assetId == x);
 
+        string _savePathBackup = $"{Application.persistentDataPath}/{MetaManager.instance.savePath}Modded_BACKUP.es3";
+        bool backupExists = File.Exists(_savePathBackup);
+
         if(useBackup){
             try{
                 string _savePathOriginal = $"{Application.persistentDataPath}/{MetaManager.instance.savePath}Modded.es3";
-                string _savePathBackup = $"{Application.persistentDataPath}/{MetaManager.instance.savePath}Modded_BACKUP.es3";
-                if(File.Exists(_savePathBackup)){
+                if(backupExists){
                     File.Copy(_savePathBackup, _savePathOriginal, true);
                     Logger.LogWarning($"[MetaSave] Restored {Path.GetFileName(_savePathOriginal)} from {Path.GetFileName(_savePathBackup)}");
                 }else{
@@ -250,6 +254,8 @@ internal static class MetaManagerPatch
                     }
                 }
                 #endregion
+
+                if(!backupExists) CreateSaveBackup($"{MetaManager.instance.savePath}Modded");
             }else{
                 SaveModded(false);
             }
