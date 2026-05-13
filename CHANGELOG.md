@@ -1,4 +1,8 @@
-# v4.0.2
+# v4.0.3
+
+- Fixed vanilla meta save backups not being created. (#81)
+
+## v4.0.2
 
 - Fixed customize menu not working. (#76)
 - Implemented the meta save file backup logic from v0.4.2 (#76)
