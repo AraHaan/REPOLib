@@ -127,7 +127,7 @@ internal static class MetaManagerPatch
             ES3.Save("cosmeticUnlocks", MetaManager.instance.cosmeticUnlocks.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
             ES3.Save("cosmeticHistory", MetaManager.instance.cosmeticHistory.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
         }catch(System.Exception e){
-            Debug.LogError(e);
+            Logger.LogError(e);
         }
         #endregion
 
@@ -159,7 +159,7 @@ internal static class MetaManagerPatch
 
             ES3.StoreCachedFile(_saveSettingsModded);
         }catch(System.Exception e){
-            Debug.LogError(e);
+            Logger.LogError(e);
         }
         #endregion
     }
