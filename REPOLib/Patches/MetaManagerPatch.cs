@@ -94,7 +94,7 @@ internal static class MetaManagerPatch
                 File.Copy(_savePathOriginal, _savePathBackup, true);
             }
         }catch(System.Exception e){
-            Debug.LogException(e);
+            Logger.LogError(e);
         }
     }
 
