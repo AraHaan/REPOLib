@@ -1,4 +1,8 @@
-# v4.0.3
+# v4.0.4
+
+- Fixed gaining infinite tokens if an exception occurs whilst attempting to save the meta files. (#82)
+
+## v4.0.3
 
 - Fixed vanilla meta save backups not being created. (#81)
 
