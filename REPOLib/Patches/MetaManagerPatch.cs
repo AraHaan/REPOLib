@@ -94,7 +94,7 @@ internal static class MetaManagerPatch
                 File.Copy(_savePathOriginal, _savePathBackup, true);
             }
         }catch(System.Exception e){
-            Debug.LogException(e);
+            Logger.LogError(e);
         }
     }
 
@@ -112,45 +112,55 @@ internal static class MetaManagerPatch
         if(!MetaManager.instance) return;
 
         bool IsValidCosmetic(int x) => x >= 0 && x < MetaManager.instance.cosmeticAssets.Count && MetaManager.instance.cosmeticAssets[x] != null;
-        bool IsValidVanillaCosmetic(int x) => IsValidCosmetic(x) && !Cosmetics.RegisteredCosmetics.Contains(MetaManager.instance.cosmeticAssets[x]);
-        bool IsValidModdedCosmetic(int x) => IsValidCosmetic(x) && Cosmetics.RegisteredCosmetics.Contains(MetaManager.instance.cosmeticAssets[x]);
 
         #region Vanilla
-        var _saveSettings = new ES3Settings(ES3.Location.File);
-        _saveSettings.encryptionType = ES3.EncryptionType.AES;
-        _saveSettings.encryptionPassword = StatsManager.instance.totallyNormalString;
-        _saveSettings.path = $"{MetaManager.instance.savePath}.es3";
+        try{
+            bool IsValidVanillaCosmetic(int x) => IsValidCosmetic(x) && !Cosmetics.RegisteredCosmetics.Contains(MetaManager.instance.cosmeticAssets[x]);
 
-        // Values that are in-sync with vanilla save file
-        ES3.Save("cosmeticTokens", MetaManager.instance.cosmeticTokens, _saveSettings);
-        ES3.Save("cosmeticUnlocks", MetaManager.instance.cosmeticUnlocks.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
-        ES3.Save("cosmeticHistory", MetaManager.instance.cosmeticHistory.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
+            var _saveSettings = new ES3Settings(ES3.Location.File);
+            _saveSettings.encryptionType = ES3.EncryptionType.AES;
+            _saveSettings.encryptionPassword = StatsManager.instance.totallyNormalString;
+            _saveSettings.path = $"{MetaManager.instance.savePath}.es3";
+
+            // Values that are in-sync with vanilla save file
+            ES3.Save("cosmeticTokens", MetaManager.instance.cosmeticTokens, _saveSettings);
+            ES3.Save("cosmeticUnlocks", MetaManager.instance.cosmeticUnlocks.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
+            ES3.Save("cosmeticHistory", MetaManager.instance.cosmeticHistory.Where(IsValidVanillaCosmetic).ToList(), _saveSettings);
+        }catch(System.Exception e){
+            Logger.LogError(e);
+        }
         #endregion
 
         #region Modded
         if(createBackup) CreateSaveBackup($"{MetaManager.instance.savePath}Modded");
 
-        var _saveSettingsModded = new ES3Settings(ES3.Location.Cache);
-        _saveSettingsModded.encryptionType = _saveSettings.encryptionType;
-        _saveSettingsModded.encryptionPassword = _saveSettings.encryptionPassword;
-        _saveSettingsModded.path = $"{MetaManager.instance.savePath}Modded.es3";
+        try{
+            bool IsValidModdedCosmetic(int x) => IsValidCosmetic(x) && Cosmetics.RegisteredCosmetics.Contains(MetaManager.instance.cosmeticAssets[x]);
 
-        ES3.Save("cosmeticUnlocks", MetaManager.instance.cosmeticUnlocks.Where(IsValidModdedCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
-            .Concat(missingCosmeticUnlocks).ToList(), _saveSettingsModded);
-        ES3.Save("cosmeticHistory", MetaManager.instance.cosmeticHistory.Where(IsValidModdedCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
-            .Concat(missingCosmeticHistory).ToList(), _saveSettingsModded);
+            var _saveSettingsModded = new ES3Settings(ES3.Location.Cache);
+            _saveSettingsModded.encryptionType = ES3.EncryptionType.AES;
+            _saveSettingsModded.encryptionPassword = StatsManager.instance.totallyNormalString;
+            _saveSettingsModded.path = $"{MetaManager.instance.savePath}Modded.es3";
 
-        ES3.Save("cosmeticEquipped", MetaManager.instance.cosmeticEquipped.Where(IsValidCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
-            .Concat(missingCosmeticEquipped).ToList(), _saveSettingsModded);
+            ES3.Save("cosmeticUnlocks", MetaManager.instance.cosmeticUnlocks.Where(IsValidModdedCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
+                .Concat(missingCosmeticUnlocks).ToList(), _saveSettingsModded);
+            ES3.Save("cosmeticHistory", MetaManager.instance.cosmeticHistory.Where(IsValidModdedCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
+                .Concat(missingCosmeticHistory).ToList(), _saveSettingsModded);
 
-        ES3.Save("cosmeticPresets", MetaManager.instance.cosmeticPresets.Select((preset, i) => preset.Where(IsValidCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
-            .Concat(missingCosmeticPresets[i]).ToList()
-        ).ToList(), _saveSettingsModded);
+            ES3.Save("cosmeticEquipped", MetaManager.instance.cosmeticEquipped.Where(IsValidCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
+                .Concat(missingCosmeticEquipped).ToList(), _saveSettingsModded);
 
-        ES3.Save("colorPresets", MetaManager.instance.colorPresets, _saveSettingsModded);
-        ES3.Save("colorsEquipped", MetaManager.instance.colorsEquipped, _saveSettingsModded);
+            ES3.Save("cosmeticPresets", MetaManager.instance.cosmeticPresets.Select((preset, i) => preset.Where(IsValidCosmetic).Select(x => MetaManager.instance.cosmeticAssets[x].assetId)
+                .Concat(missingCosmeticPresets[i]).ToList()
+            ).ToList(), _saveSettingsModded);
 
-        ES3.StoreCachedFile(_saveSettingsModded);
+            ES3.Save("colorPresets", MetaManager.instance.colorPresets, _saveSettingsModded);
+            ES3.Save("colorsEquipped", MetaManager.instance.colorsEquipped, _saveSettingsModded);
+
+            ES3.StoreCachedFile(_saveSettingsModded);
+        }catch(System.Exception e){
+            Logger.LogError(e);
+        }
         #endregion
     }
 
